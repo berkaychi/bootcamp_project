@@ -12,19 +12,27 @@ namespace LibraryManagement.Controllers
     {
         private readonly DataContext _context = context;
 
-        private bool IsAdmin()
+        private bool IsAdmin()  // Admin kontrolü
         {
             return HttpContext.Session.GetString("UserRole") == "Admin";
+        }
+
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                return BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(password))).Replace("-", "").ToLower();
+            }
         }
 
         public async Task<IActionResult> Index()
         {
             if (HttpContext.Session.GetString("UserEmail") == null)
             {
-                return RedirectToAction("Login");
+                return RedirectToAction("Login");  // Giriş yapılmamışsa logine yönlendir
             }
 
-            if (!IsAdmin())
+            if (!IsAdmin())  // Kullanıcı admin değilse hata mesajı dönderip anasayfaya yönlendirir.
             {
                 TempData["ErrorMessage"] = "Yetkisiz giriş! Bu sayfaya erişim izniniz yok.";
                 return RedirectToAction("Index", "Home"); // Anasayfaya yönlendirir
@@ -48,7 +56,7 @@ namespace LibraryManagement.Controllers
             }
 
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-            if (existingUser != null)
+            if (existingUser != null)  // Kullanıcının var olup olmadığının kontrolü
             {
                 ViewBag.ErrorMessage = "Bu e-posta adresi zaten kayıtlı!";
                 return View(model);
@@ -69,7 +77,7 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAdmin(User model)
+        public async Task<IActionResult> CreateAdmin(User model)  // Admin oluşturma işlemleri
         {
             if (!IsAdmin()) return Unauthorized();
             if (!ModelState.IsValid)
@@ -91,7 +99,6 @@ namespace LibraryManagement.Controllers
             return RedirectToAction("Index");
         }
 
-
         [HttpGet]
         public IActionResult Login()
         {
@@ -110,30 +117,30 @@ namespace LibraryManagement.Controllers
                 return View();
             }
 
-            HttpContext.Session.SetString("UserEmail", user.Email);
-            HttpContext.Session.SetString("UserRole", user.Role);
+            HttpContext.Session.SetString("UserEmail", user.Email); // Session'a user'ın email 
+            HttpContext.Session.SetString("UserRole", user.Role);   // ve rol bilgilerini atıyor
 
-            if (user.Role == "Admin")
+            if (user.Role == "Admin")  // Giriş yapan admin ise user sayfasına yönlendiriyor
             {
                 return RedirectToAction("Index", "User");
             }
             else
             {
-                return RedirectToAction("Index", "Book");
+                return RedirectToAction("Index", "Book");  // admin değilse kitap sayfasına yönlendiriyor
             }
         }
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
+            HttpContext.Session.Clear();  // Çıkış yapılınca session'da olan bilgileri temizliyor
             return RedirectToAction("Login");
         }
 
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> Profile() // Profil görüntüleme işlemleri
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")))
             {
-                return RedirectToAction("Login");
+                return RedirectToAction("Login");  // Giriş yapılmamışsa logine yönlendiriyor
             }
 
             string userEmail = HttpContext.Session.GetString("UserEmail");
@@ -144,7 +151,7 @@ namespace LibraryManagement.Controllers
                 return NotFound();
             }
 
-            var borrowedBooks = await _context.Books
+            var borrowedBooks = await _context.Books  // Mevcut kullanıcının ödünç aldığı kitapları getiriyor
                 .Where(b => b.BorrowedBy == user.Email)
                 .ToListAsync();
 
@@ -170,6 +177,7 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, User model)
         {
             if (!IsAdmin()) return Unauthorized();
@@ -266,14 +274,6 @@ namespace LibraryManagement.Controllers
 
             ViewBag.SuccessMessage = "Şifreniz başarıyla değiştirildi.";
             return View();
-        }
-
-        private string HashPassword(string password)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                return BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(password))).Replace("-", "").ToLower();
-            }
         }
     }
 }

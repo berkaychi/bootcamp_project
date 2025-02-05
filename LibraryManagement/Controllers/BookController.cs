@@ -11,6 +11,10 @@ namespace LibraryManagement.Controllers
     {
         private readonly DataContext _context = context;
 
+        private bool IsAdmin()  // Admin rolü kontrolü
+        {
+            return HttpContext.Session.GetString("UserRole") == "Admin";
+        }
 
         public async Task<IActionResult> Index()
         {
@@ -22,13 +26,23 @@ namespace LibraryManagement.Controllers
         public IActionResult Create()
         {
             if (!IsAdmin()) return Unauthorized();
+            ViewBag.Categories = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Roman", Text = "Roman" },
+                new SelectListItem { Value = "Bilim Kurgu", Text = "Bilim Kurgu" },
+                new SelectListItem { Value = "Fantastik", Text = "Fantastik" },
+                new SelectListItem { Value = "Tarih", Text = "Tarih" },
+                new SelectListItem { Value = "Biyografi", Text = "Biyografi" },
+                new SelectListItem { Value = "Kişisel Gelişim", Text = "Kişisel Gelişim" },
+                new SelectListItem { Value = "Polisiye", Text = "Polisiye" }
+            };
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(Book model)
         {
-            if (!IsAdmin()) return Unauthorized();
+            if (!IsAdmin()) return Unauthorized();  // Kullanıcı admin değilse sayfaya erişilemez.
 
             _context.Books.Add(model);
             await _context.SaveChangesAsync();
@@ -43,7 +57,8 @@ namespace LibraryManagement.Controllers
             {
                 return NotFound();
             }
-            ViewBag.Categories = new List<SelectListItem>
+
+            ViewBag.Categories = new List<SelectListItem>  // kategori seçimi için hazır liste
             {
                 new SelectListItem { Value = "Roman", Text = "Roman" },
                 new SelectListItem { Value = "Bilim Kurgu", Text = "Bilim Kurgu" },
@@ -129,12 +144,12 @@ namespace LibraryManagement.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Borrow(int id)
+        public async Task<IActionResult> Borrow(int id)  // Kitap ödünç alma işlemleri
         {
-            if (IsAdmin()) return Unauthorized();
+            if (IsAdmin()) return Unauthorized();  // Adminler kitap alamaz
 
             var book = await _context.Books.FindAsync(id);
-            if (book == null || !string.IsNullOrEmpty(book.BorrowedBy))
+            if (book == null || !string.IsNullOrEmpty(book.BorrowedBy))  // kitap yoksa veya başkasındaysa
             {
                 return NotFound();
             }
@@ -144,7 +159,7 @@ namespace LibraryManagement.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Return(int id)
+        public async Task<IActionResult> Return(int id)  // kitabı geri verme işlemi
         {
             var book = await _context.Books.FindAsync(id);
             if (book == null)
@@ -152,8 +167,8 @@ namespace LibraryManagement.Controllers
                 return NotFound();
             }
 
-            if (book.BorrowedBy == HttpContext.Session.GetString("UserEmail") || IsAdmin())
-            {
+            if (book.BorrowedBy == HttpContext.Session.GetString("UserEmail") || IsAdmin())  // kitabın sahibiyse veya
+            {                                                                                //admin ise işlem yapabilir
                 book.BorrowedBy = null;
                 await _context.SaveChangesAsync();
             }
@@ -162,7 +177,7 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssignBook(int bookId, int userId)
+        public async Task<IActionResult> AssignBook(int bookId, int userId)  // Adminlerin kullanıcılara kitap tanımlama işlemi
         {
             if (!IsAdmin()) return Unauthorized();
 
@@ -180,9 +195,6 @@ namespace LibraryManagement.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool IsAdmin()
-        {
-            return HttpContext.Session.GetString("UserRole") == "Admin";
-        }
+
     }
 }

@@ -17,7 +17,9 @@
     </div>
     <div class="mb-3">
         <label asp-for="Category" class="form-label"></label>
-        <input asp-for="Category" class="form-control">
+        <select asp-for="Category" class="form-select" asp-items="ViewBag.Categories">
+            <option value="">Kategori Seçiniz</option>
+        </select>
     </div>
 
     <button type="submit" class="btn btn-secondary">Kaydet</button>

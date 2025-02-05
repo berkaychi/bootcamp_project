@@ -18,6 +18,6 @@ namespace LibraryManagement.Data
 
         public string? Category { get; set; }
 
-        public string? BorrowedBy { get; set; }
+        public string? BorrowedBy { get; set; } // Ödünç alan kullanıcının e-posta bilgisi
     }
 }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "l58Ld4Zi9qS6soaMpzvzgnPN8yYst4PW1Sp9tjc0uv8=",
+  "Hash": "IAnoqxRXwQTIrV2d7bu5jUtL4d5xlt8CAq32Iw35+Wo=",
   "Source": "LibraryManagement",
   "BasePath": "_content/LibraryManagement",
   "Mode": "Default",
@@ -1739,12 +1739,12 @@
       "OriginalItemSpec": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js"
     },
     {
-      "Identity": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-xy8pa8qf98.gz",
+      "Identity": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-v36seab9g6.gz",
       "SourceId": "LibraryManagement",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/LibraryManagement",
-      "RelativePath": "css/site#[.{fingerprint=xy8pa8qf98}]?.css.gz",
+      "RelativePath": "css/site#[.{fingerprint=v36seab9g6}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -1753,8 +1753,8 @@
       "RelatedAsset": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\wwwroot\\css\\site.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "vfsvi2105n",
-      "Integrity": "u0sZgy3+bKFQzM6ZHyW/fXdlr2V4cPXT/g/bRwkaEt8=",
+      "Fingerprint": "hpnp2pbfu4",
+      "Integrity": "Rfo4IltgWeYLbVf1mAtNf3FKa5CC3rmLRa3c+G5xggI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\wwwroot\\css\\site.css"
@@ -4042,8 +4042,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "xy8pa8qf98",
-      "Integrity": "VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q=",
+      "Fingerprint": "v36seab9g6",
+      "Integrity": "Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
@@ -5412,12 +5412,12 @@
     },
     {
       "Route": "css/site.css",
-      "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-xy8pa8qf98.gz",
+      "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-v36seab9g6.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001577287066"
+          "Quality": "0.001779359431"
         }
       ],
       "ResponseHeaders": [
@@ -5427,15 +5427,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "633"
+          "Value": "561"
         },
         {
           "Name": "ETag",
-          "Value": "\"u0sZgy3+bKFQzM6ZHyW/fXdlr2V4cPXT/g/bRwkaEt8=\""
+          "Value": "\"Rfo4IltgWeYLbVf1mAtNf3FKa5CC3rmLRa3c+G5xggI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 04 Feb 2025 23:48:53 GMT"
+          "Value": "Wed, 05 Feb 2025 11:56:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5455,13 +5455,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q=\""
+          "Value": "W/\"Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q="
+          "Value": "sha256-Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I="
         }
       ]
     },
@@ -5476,7 +5476,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1557"
+          "Value": "1250"
         },
         {
           "Name": "Content-Type",
@@ -5484,11 +5484,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q=\""
+          "Value": "\"Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 04 Feb 2025 23:48:53 GMT"
+          "Value": "Wed, 05 Feb 2025 11:56:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5498,13 +5498,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q="
+          "Value": "sha256-Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I="
         }
       ]
     },
     {
       "Route": "css/site.css.gz",
-      "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-xy8pa8qf98.gz",
+      "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-v36seab9g6.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -5513,7 +5513,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "633"
+          "Value": "561"
         },
         {
           "Name": "Content-Type",
@@ -5521,11 +5521,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"u0sZgy3+bKFQzM6ZHyW/fXdlr2V4cPXT/g/bRwkaEt8=\""
+          "Value": "\"Rfo4IltgWeYLbVf1mAtNf3FKa5CC3rmLRa3c+G5xggI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 04 Feb 2025 23:48:53 GMT"
+          "Value": "Wed, 05 Feb 2025 11:56:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5543,18 +5543,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-u0sZgy3+bKFQzM6ZHyW/fXdlr2V4cPXT/g/bRwkaEt8="
+          "Value": "sha256-Rfo4IltgWeYLbVf1mAtNf3FKa5CC3rmLRa3c+G5xggI="
         }
       ]
     },
     {
-      "Route": "css/site.xy8pa8qf98.css",
-      "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-xy8pa8qf98.gz",
+      "Route": "css/site.v36seab9g6.css",
+      "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-v36seab9g6.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001577287066"
+          "Quality": "0.001779359431"
         }
       ],
       "ResponseHeaders": [
@@ -5564,15 +5564,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "633"
+          "Value": "561"
         },
         {
           "Name": "ETag",
-          "Value": "\"u0sZgy3+bKFQzM6ZHyW/fXdlr2V4cPXT/g/bRwkaEt8=\""
+          "Value": "\"Rfo4IltgWeYLbVf1mAtNf3FKa5CC3rmLRa3c+G5xggI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 04 Feb 2025 23:48:53 GMT"
+          "Value": "Wed, 05 Feb 2025 11:56:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5592,13 +5592,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q=\""
+          "Value": "W/\"Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "xy8pa8qf98"
+          "Value": "v36seab9g6"
         },
         {
           "Name": "label",
@@ -5606,12 +5606,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q="
+          "Value": "sha256-Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I="
         }
       ]
     },
     {
-      "Route": "css/site.xy8pa8qf98.css",
+      "Route": "css/site.v36seab9g6.css",
       "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\wwwroot\\css\\site.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -5621,7 +5621,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1557"
+          "Value": "1250"
         },
         {
           "Name": "Content-Type",
@@ -5629,11 +5629,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q=\""
+          "Value": "\"Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 04 Feb 2025 23:48:53 GMT"
+          "Value": "Wed, 05 Feb 2025 11:56:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5643,7 +5643,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "xy8pa8qf98"
+          "Value": "v36seab9g6"
         },
         {
           "Name": "label",
@@ -5651,13 +5651,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-VzwCU+50kPvZGd2wV3++4orDMDWecfuGHn8DU6D4j7Q="
+          "Value": "sha256-Fcw8KYz7tCKMGT8JSO1DNNnEwx2VpckD8MS4i3EC18I="
         }
       ]
     },
     {
-      "Route": "css/site.xy8pa8qf98.css.gz",
-      "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-xy8pa8qf98.gz",
+      "Route": "css/site.v36seab9g6.css.gz",
+      "AssetFile": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\compressed\\6j2bjgr2xp-v36seab9g6.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -5666,7 +5666,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "633"
+          "Value": "561"
         },
         {
           "Name": "Content-Type",
@@ -5674,11 +5674,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"u0sZgy3+bKFQzM6ZHyW/fXdlr2V4cPXT/g/bRwkaEt8=\""
+          "Value": "\"Rfo4IltgWeYLbVf1mAtNf3FKa5CC3rmLRa3c+G5xggI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 04 Feb 2025 23:48:53 GMT"
+          "Value": "Wed, 05 Feb 2025 11:56:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5696,7 +5696,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "xy8pa8qf98"
+          "Value": "v36seab9g6"
         },
         {
           "Name": "label",
@@ -5704,7 +5704,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-u0sZgy3+bKFQzM6ZHyW/fXdlr2V4cPXT/g/bRwkaEt8="
+          "Value": "sha256-Rfo4IltgWeYLbVf1mAtNf3FKa5CC3rmLRa3c+G5xggI="
         }
       ]
     },
