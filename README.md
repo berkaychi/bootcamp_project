@@ -17,7 +17,7 @@ Bu proje, kütüphane yönetim süreçlerini dijitalleştirmek amacıyla gelişt
    ```
 2. Proje dizinine gidin:
    ```sh
-   cd kutuphane-yonetim
+   cd LibraryManagement
    ```
 3. Gerekli bağımlılıkları yükleyin:
    ```sh
