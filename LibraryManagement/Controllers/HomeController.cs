@@ -1,22 +1,29 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using LibraryManagement.Models;
+using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Data;
 
 namespace LibraryManagement.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    private readonly DataContext _context;
+    public HomeController(ILogger<HomeController> logger, DataContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var books = await _context.Books
+                                  .Where(b => string.IsNullOrEmpty(b.BorrowedBy)) // Ödünç alınmamış kitapları filtrele
+                                  .ToListAsync();
+        return View(books);
     }
+
 
     public IActionResult Privacy()
     {

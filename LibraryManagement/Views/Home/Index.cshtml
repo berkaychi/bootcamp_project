@@ -9,7 +9,25 @@
     </div>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Kütüphane Yönetim Sistemi</h1>
+        <p class="lead">Kütüphanemizde bulunan tüm kitapları keşfedin ve ödünç alın!</p>
+    </div>
+    <h1>Kullanılabilir kitaplar</h1>
+    <div class="row">
+        @foreach (var book in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text"><strong>Yazar:</strong> @book.Author</p>
+                        <p class="card-text"><strong>Yayın Tarihi:</strong> @book.PublishYear</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
