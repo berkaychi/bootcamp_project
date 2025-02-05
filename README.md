@@ -4,7 +4,7 @@
 Bu proje, kütüphane yönetim süreçlerini dijitalleştirmek amacıyla geliştirilmiştir. Kullanıcılar, kitap ekleme, güncelleme, silme ve arama işlemlerini kolayca gerçekleştirebilir. Ayrıca ödünç alma ve iade süreçleri yönetilebilir.
 
 ## **Kullanılan Teknolojiler**
-- **ASP.NET Core (Razor Pages/MVC)** - Backend geliştirme için kullanılmıştır.
+- **ASP.NET Core MVC** - Backend geliştirme için kullanılmıştır.
 - **SQLite** - Hafif ve kolay yönetilebilir veritabanı çözümü.
 - **Entity Framework Core** - ORM kullanılarak veritabanı işlemlerini kolaylaştırır.
 - **HTML, CSS, JavaScript** - Kullanıcı arayüzü geliştirmek için kullanılmıştır.
