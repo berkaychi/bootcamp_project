@@ -1,0 +1,28 @@
+@model User
+
+@{
+    ViewBag.Title = "Giriş Yap";
+}
+
+<h2>Giriş Yap</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<form asp-action="Login" method="post">
+    <div class="mb-3">
+        <label for="email" class="form-label">E-Posta</label>
+        <input name="email" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Şifre</label>
+        <input name="password" type="password" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-success">Giriş Yap</button>
+</form>
+
+<h6 class="py-2">Hesabın yok mu? <a asp-action="Register">Kaydol</a></h6>

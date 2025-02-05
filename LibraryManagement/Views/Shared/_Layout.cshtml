@@ -4,45 +4,76 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LibraryManagement</title>
-    <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LibraryManagement.styles.css" asp-append-version="true" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="custom-bg">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LibraryManagement</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+        <nav class="navbar navbar-expand navbar-custom">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/library_logo.png" alt="Library Logo" class="logo">
+                </a>
+
+                <ul class="navbar-nav gap-3">
+                    <li class="nav-item">
+                        <a class="black_btn" asp-controller="Home" asp-action="Index">ANASAYFA</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="black_btn" asp-controller="Book" asp-action="Index">KİTAPLAR</a>
+                    </li>
+                    @if (Context.Session.GetString("UserRole") == "Admin")
+                    {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="black_btn" asp-controller="User" asp-action="Index">KULLANICILAR</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">Books</a>
+                    }
+                </ul>
+
+                <ul class="navbar-nav d-flex gap-3">
+                    @if (!string.IsNullOrEmpty(Context.Session.GetString("UserEmail")))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user"></i> @Context.Session.GetString("UserEmail")
+                            </a>
+                            <ul class="dropdown-menu shadow-lg">
+                                <li><a class="dropdown-item py-1" asp-controller="User" asp-action="Profile"><i class="fa-solid fa-user-circle"></i> Profil</a></li>
+                                <li><a class="dropdown-item text-danger" asp-controller="User" asp-action="Logout"><i class="fa-solid fa-sign-out-alt"></i> Çıkış Yap</a></li>
+                            </ul>
                         </li>
-                    </ul>
-                </div>
+
+                    }
+                    else
+                    {
+                        <li class="nav-item navbar-nav">
+                            <a class="nav-link black_btn" asp-controller="User" asp-action="Login">GİRİŞ YAP</a>
+                        </li>
+                        <li class="nav-item navbar-nav">
+                            <a class="nav-link black_btn" asp-controller="User" asp-action="Register">KAYIT OL</a>
+                        </li>
+                    }
+                </ul>
             </div>
         </nav>
+
     </header>
-    <div class="container">
+
+    <div class="container custom-container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - LibraryManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted bg-dark mt-5">
+        <div class="container text-center py-3 text-white">
+            &copy; 2025 - LibraryManagement - <a asp-controller="Home" asp-action="Privacy" class="text-white">Gizlilik Politikası</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

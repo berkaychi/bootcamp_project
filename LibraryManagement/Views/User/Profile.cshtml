@@ -1,0 +1,49 @@
+@model User
+@using LibraryManagement.Data
+
+<h2>Profil Bilgileri</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+        <p class="card-text"><strong>Rol:</strong> @Model.Role</p>
+
+        <a asp-action="ChangePassword" class="btn btn-warning">Şifre Değiştir</a>
+    </div>
+</div>
+
+<h3 class="mt-4">Ödünç Alınan Kitaplar</h3>
+
+@if (ViewBag.BorrowedBooks != null && ((List<Book>)ViewBag.BorrowedBooks).Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Başlık</th>
+                <th>Yazar</th>
+                <th>Yayın Yılı</th>
+                <th>Kategori</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in ViewBag.BorrowedBooks as List<Book>)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.PublishYear</td>
+                    <td>@book.Category</td>
+                    <td>
+                        <a asp-controller="Book" asp-action="Return" asp-route-id="@book.Id" class="btn btn-danger btn-sm">Geri Ver</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">Şu anda ödünç alınan kitap bulunmamaktadır.</p>
+}

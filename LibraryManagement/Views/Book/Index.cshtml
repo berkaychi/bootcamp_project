@@ -1,23 +1,26 @@
-@model IEnumerable<Book>
+@model IEnumerable<LibraryManagement.Data.Book>
 
-<h2>Kitap Listesi</h2>
+<h2 class="page-title">Kitap Listesi</h2>
 
-<a asp-controller="Book" asp-action="Create" class="btn btn-primary">Kitap Ekle</a>
+
 <hr>
-<table class="table table-bordered">
+
+<table class="table table-bordered table-secondary">
     <thead>
         <tr>
-            <th style="width: 10px;">@Html.DisplayNameFor(m=>m.Id)</th>
-            <th>@Html.DisplayNameFor(m=>m.Title)</th>
-            <th>@Html.DisplayNameFor(m=>m.Author)</th>
-            <th>@Html.DisplayNameFor(m=>m.PublishYear)</th>
-            <th>@Html.DisplayNameFor(m=>m.Category)</th>
-            <th style="width: 150px;"></th>
+            <th style="width: 10px;">@Html.DisplayNameFor(m => m.Id)</th>
+            <th>@Html.DisplayNameFor(m => m.Title)</th>
+            <th>@Html.DisplayNameFor(m => m.Author)</th>
+            <th>@Html.DisplayNameFor(m => m.PublishYear)</th>
+            <th>@Html.DisplayNameFor(m => m.Category)</th>
+            <th>Durum</th>
+            <th style="width: 300px;">İşlemler</th>
         </tr>
     </thead>
 
     <tbody>
-        @foreach(var item in Model){
+        @foreach (var item in Model)
+        {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Id)</td>
                 <td>@Html.DisplayFor(modelItem => item.Title)</td>
@@ -25,10 +28,56 @@
                 <td>@Html.DisplayFor(modelItem => item.PublishYear)</td>
                 <td>@Html.DisplayFor(modelItem => item.Category)</td>
                 <td>
-                    <a asp-asp-controller="Book" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Details</a>
-                    <a asp-asp-controller="Book" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                    @if (string.IsNullOrEmpty(item.BorrowedBy))
+                    {
+                        <span class="text-success">Müsait</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Şu an @item.BorrowedBy tarafından kullanılıyor</span>
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Book" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detaylar</a>
+
+                    @if (Context.Session.GetString("UserRole") == "Admin")
+                    {
+                        <a asp-controller="Book" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Sil</a>
+                        
+                        @if (!string.IsNullOrEmpty(item.BorrowedBy))
+                        {
+                            <a asp-controller="Book" asp-action="Return" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Geri Ver</a>
+                        }
+
+                        <form asp-controller="Book" asp-action="AssignBook" method="post" class="d-inline">
+                            <input type="hidden" name="bookId" value="@item.Id" />
+                            <select name="userId" class="form-select d-inline w-auto">
+                                @foreach (var user in ViewBag.Users as List<LibraryManagement.Data.User>)
+                                {
+                                    <option value="@user.Id">@user.Name</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-success btn-sm">Kullanıcıya Ata</button>
+                        </form>
+                    }
+                    else
+                    {
+                        @if (string.IsNullOrEmpty(item.BorrowedBy))
+                        {
+                            <a asp-controller="Book" asp-action="Borrow" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Ödünç Al</a>
+                        }
+                        else if (item.BorrowedBy == Context.Session.GetString("UserEmail"))
+                        {
+                            <a asp-controller="Book" asp-action="Return" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Geri Ver</a>
+                        }
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@if (Context.Session.GetString("UserRole") == "Admin")
+{
+    <a asp-controller="Book" asp-action="Create" class="btn btn-success">Yeni Kitap Ekle</a>
+}

@@ -2,7 +2,7 @@
   "Files": [
     {
       "Id": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\LibraryManagement.bundle.scp.css",
-      "PackagePath": "staticwebassets\\LibraryManagement.br09t6e7tm.bundle.scp.css"
+      "PackagePath": "staticwebassets\\LibraryManagement.pod5pz8lri.bundle.scp.css"
     },
     {
       "Id": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\wwwroot\\css\\site.css",
@@ -11,6 +11,10 @@
     {
       "Id": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\wwwroot\\img\\library_logo.png",
+      "PackagePath": "staticwebassets\\img\\library_logo.png"
     },
     {
       "Id": "C:\\Users\\berka\\Desktop\\bootcamp_project\\LibraryManagement\\wwwroot\\js\\site.js",

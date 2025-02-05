@@ -9,12 +9,20 @@ namespace LibraryManagement.Data
         public int Id { get; set; }
 
         [Required]
-        public string Username { get; set; }
+        [Display(Name = "Ad Soyad")]
+        public string Name { get; set; }
 
         [Required]
+        [EmailAddress]
+        [Display(Name = "E-posta")]
+        public string Email { get; set; }
+
+
+        [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]
-        public string Role { get; set; }
+        public string Role { get; set; } = "User";
     }
 }

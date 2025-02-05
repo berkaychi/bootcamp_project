@@ -18,10 +18,6 @@ namespace LibraryManagement.Data
 
         public string? Category { get; set; }
 
-        public bool IsAvailable { get; set; } = true;
-
-        public int? RentedByUserId { get; set; }
-
-        public User? RentedByUser { get; set; }
+        public string? BorrowedBy { get; set; }
     }
 }
