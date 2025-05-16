@@ -33,7 +33,7 @@ Bu proje, kütüphane yönetim süreçlerini dijitalleştirmek amacıyla gelişt
    ```
 6. Tarayıcınızda aşağıdaki bağlantıyı açarak projeyi inceleyin:
    ```
-   http://localhost:5000
+   http://localhost:5069
    ```
 
 ## **Kod Yapısı**
