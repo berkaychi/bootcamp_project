@@ -72,11 +72,3 @@ Bu proje, kütüphane yönetim süreçlerini dijitalleştirmek amacıyla gelişt
 ![image](https://github.com/user-attachments/assets/c42c1737-92fe-4272-81a7-fc5be0055ee7)
 
 ---
-
-Bu proje, kütüphane yönetimini kolaylaştırarak kitapların ve kullanıcıların verimli bir şekilde yönetilmesini sağlar. Her türlü geri bildirim ve katkıya açıktır!
-
-Bu API için ön uç geliştiricilerin rahatça kullanabileceği detaylı bir dokümantasyon hazırlayacağım. Markdown formatında oluşturacağım, böylece GitHub, Notion veya herhangi bir dokümantasyon platformunda kolayca paylaşılabilir. 
-
-Aşağıda, **UsersController** içinde tanımlı tüm **GET** ve **POST** işlemleri için hazırladığım API dokümantasyonunu bulabilirsin. Eğer Swagger gibi bir dokümantasyon aracı ile çalışıyorsan, bu yapıyı OpenAPI'ye çevirebilirim.
-
----
