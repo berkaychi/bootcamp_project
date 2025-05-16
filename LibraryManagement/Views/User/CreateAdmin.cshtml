@@ -15,5 +15,10 @@
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
+<div class="form-group mb-3">
+        <label for="password">Şifre</label>
+        <input type="password" id="password" name="password" class="form-control" required />
+        @* You might want to add validation messages here if using client-side validation *@
+    </div>
     <button type="submit" class="btn btn-primary">Admin Ekle</button>
 </form>

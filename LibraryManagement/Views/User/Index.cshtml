@@ -29,4 +29,7 @@
     </tbody>
 </table>
 
-<a asp-action="Register" class="btn btn-success">Yeni Kullanıcı Ekle</a>
+@if (User.IsInRole("Admin"))
+{
+    <a asp-controller="User" asp-action="CreateAdmin" class="btn btn-success">Yeni Kullanıcı Ekle</a>
+}

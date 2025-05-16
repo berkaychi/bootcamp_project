@@ -240,7 +240,7 @@ namespace LibraryManagement.Controllers
             }
             if (!string.IsNullOrEmpty(book.BorrowedByUserId))
             {
-                TempData["ErrorMessage"] = "Book is already borrowed.";
+                TempData["ErrorMessage"] = "Bu kitap zaten başka bir kullanıcıya ödünç verilmiş.";
                 return RedirectToAction("Index");
             }
 
