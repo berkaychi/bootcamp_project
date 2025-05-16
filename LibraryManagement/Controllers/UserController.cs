@@ -2,278 +2,235 @@ using System.Threading.Tasks;
 using LibraryManagement.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using System.Security.Cryptography;
-using System.Text;
+using Microsoft.AspNetCore.Identity; // Added for Identity
+using Microsoft.AspNetCore.Authorization; // Added for Authorization
+using LibraryManagement.Models; // Added for ChangePasswordViewModel
+// using System.Security.Cryptography; // No longer needed for HashPassword
+// using System.Text; // No longer needed for HashPassword
 
 namespace LibraryManagement.Controllers
 {
-    public class UserController(DataContext context) : Controller
+    [Authorize] // Require authentication for user-related actions
+    public class UserController : Controller
     {
-        private readonly DataContext _context = context;
+        private readonly DataContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        // SignInManager might be needed if UserController handles login/logout, but we moved it to AccountController
 
-        private bool IsAdmin()  // Admin kontrolü
+        public UserController(DataContext context, UserManager<ApplicationUser> userManager)
         {
-            return HttpContext.Session.GetString("UserRole") == "Admin";
+            _context = context;
+            _userManager = userManager;
         }
 
-        private string HashPassword(string password)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                return BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(password))).Replace("-", "").ToLower();
-            }
-        }
+        // Removed IsAdmin() and HashPassword() as Identity handles this.
 
+        [Authorize(Roles = "Admin")] // Only Admins can see the user list
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("UserEmail") == null)
-            {
-                return RedirectToAction("Login");  // Giriş yapılmamışsa logine yönlendir
-            }
-
-            if (!IsAdmin())  // Kullanıcı admin değilse hata mesajı dönderip anasayfaya yönlendirir.
-            {
-                TempData["ErrorMessage"] = "Yetkisiz giriş! Bu sayfaya erişim izniniz yok.";
-                return RedirectToAction("Index", "Home"); // Anasayfaya yönlendirir
-            }
-
-            return View(await _context.Users.ToListAsync());
+            // Listing ApplicationUsers now
+            var users = await _userManager.Users.ToListAsync();
+            return View(users);
         }
 
+        // Register, Login, Logout actions are moved to AccountController.
+        // CreateAdmin might be re-implemented using UserManager if needed, or managed via roles.
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> CreateAdmin() // Placeholder - actual admin creation should be robust
         {
-            return View();
+            // This is a simplified view. Proper admin creation might involve selecting a user and adding them to Admin role.
+            // Or a dedicated registration path for admins.
+            // For now, this action might not be directly used if registration creates standard users
+            // and an existing admin elevates them.
+            return View(); // Needs a CreateAdmin.cshtml view if kept
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Register(User model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAdmin(string email, string password, string fullName) // Simplified model
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullName))
             {
-                return View(model);
+                ModelState.AddModelError("", "All fields are required.");
+                return View(); // Needs a CreateAdmin.cshtml view
             }
 
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-            if (existingUser != null)  // Kullanıcının var olup olmadığının kontrolü
-            {
-                ViewBag.ErrorMessage = "Bu e-posta adresi zaten kayıtlı!";
-                return View(model);
-            }
-
-            model.Password = HashPassword(model.Password);
-            _context.Users.Add(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Login");
-        }
-
-        [HttpGet]
-        public IActionResult CreateAdmin()
-        {
-            if (!IsAdmin()) return Unauthorized();
-
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateAdmin(User model)  // Admin oluşturma işlemleri
-        {
-            if (!IsAdmin()) return Unauthorized();
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            var existingUser = await _userManager.FindByEmailAsync(email);
             if (existingUser != null)
             {
-                ViewBag.ErrorMessage = "Bu e-posta adresi zaten kayıtlı!";
-                return View(model);
-            }
-
-            model.Role = "Admin";
-            model.Password = HashPassword(model.Password);
-            _context.Users.Add(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
-        {
-            var hashedPassword = HashPassword(password);
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == hashedPassword);
-
-            if (user == null)
-            {
-                ViewBag.ErrorMessage = "E-posta veya şifre hatalı!";
+                ModelState.AddModelError("", "This email address is already registered.");
                 return View();
             }
 
-            HttpContext.Session.SetString("UserEmail", user.Email); // Session'a user'ın email 
-            HttpContext.Session.SetString("UserRole", user.Role);   // ve rol bilgilerini atıyor
+            var adminUser = new ApplicationUser { UserName = email, Email = email, FullName = fullName, MembershipDate = DateTime.UtcNow };
+            var result = await _userManager.CreateAsync(adminUser, password);
 
-            if (user.Role == "Admin")  // Giriş yapan admin ise user sayfasına yönlendiriyor
+            if (result.Succeeded)
             {
-                return RedirectToAction("Index", "User");
+                await _userManager.AddToRoleAsync(adminUser, "Admin"); // Ensure "Admin" role exists
+                TempData["SuccessMessage"] = $"Admin user {email} created successfully.";
+                return RedirectToAction("Index");
             }
-            else
+
+            foreach (var error in result.Errors)
             {
-                return RedirectToAction("Index", "Book");  // admin değilse kitap sayfasına yönlendiriyor
+                ModelState.AddModelError("", error.Description);
             }
+            return View(); // Needs a CreateAdmin.cshtml view
         }
 
-        public IActionResult Logout()
+
+        public async Task<IActionResult> Profile()
         {
-            HttpContext.Session.Clear();  // Çıkış yapılınca session'da olan bilgileri temizliyor
-            return RedirectToAction("Login");
-        }
-
-        public async Task<IActionResult> Profile() // Profil görüntüleme işlemleri
-        {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")))
-            {
-                return RedirectToAction("Login");  // Giriş yapılmamışsa logine yönlendiriyor
-            }
-
-            string userEmail = HttpContext.Session.GetString("UserEmail");
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound();
+                // This case should ideally not happen if [Authorize] is effective
+                return Challenge(); // Or RedirectToAction("Login", "Account");
             }
 
-            var borrowedBooks = await _context.Books  // Mevcut kullanıcının ödünç aldığı kitapları getiriyor
-                .Where(b => b.BorrowedBy == user.Email)
+            // To get borrowed books, we now look for BorrowedByUserId
+            var borrowedBooks = await _context.Books
+                .Where(b => b.BorrowedByUserId == user.Id)
+                .Include(b => b.Borrower) // Include borrower details if needed in the view
                 .ToListAsync();
 
             ViewBag.BorrowedBooks = borrowedBooks;
-            return View(user);
+            return View(user); // Pass ApplicationUser to the view
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(string id) // Id is string (ApplicationUser.Id)
         {
-            if (!IsAdmin()) return Unauthorized();
             if (id == null)
             {
                 return NotFound();
             }
-
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-
-            return View(user);
+            // Create a ViewModel for editing user details if necessary, to avoid overposting
+            return View(user); // Pass ApplicationUser to an Edit.cshtml view
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, User model)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(string id, ApplicationUser model) // model should be a ViewModel
         {
-            if (!IsAdmin()) return Unauthorized();
-
             if (id != model.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            // This is a simplified Edit. For a real scenario, use a ViewModel and map properties.
+            // Password change should be a separate, secure process.
+            // Role management should also be distinct.
+            if (ModelState.IsValid) // Basic validation
             {
-                try
+                var userToUpdate = await _userManager.FindByIdAsync(id);
+                if (userToUpdate == null) return NotFound();
+
+                userToUpdate.FullName = model.FullName; // Example: Update FullName
+                userToUpdate.Email = model.Email;         // Example: Update Email (ensure unique if changed)
+                userToUpdate.UserName = model.Email;      // Keep UserName in sync with Email
+
+                var result = await _userManager.UpdateAsync(userToUpdate);
+                if (result.Succeeded)
                 {
-                    model.Password = HashPassword(model.Password);
-                    _context.Update(model);
-                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "User updated successfully.";
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
+                foreach (var error in result.Errors)
                 {
-                    if (!_context.Users.Any(u => u.Id == model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else { throw; }
+                    ModelState.AddModelError("", error.Description);
                 }
-                return RedirectToAction("Index");
             }
-            return View(model);
+            return View(model); // Return to Edit.cshtml view with the model
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(string id) // Id is string
         {
-            if (!IsAdmin()) return Unauthorized();
-
             if (id == null)
             {
                 return NotFound();
             }
-
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-
-            return View(user);
+            return View(user); // Pass ApplicationUser to a Delete.cshtml view
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Delete([FromForm] int id)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (!IsAdmin()) return Unauthorized();
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
             {
-                return NotFound();
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    TempData["SuccessMessage"] = "User deleted successfully.";
+                    return RedirectToAction("Index");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description); // Show errors on a view or redirect with TempData
+                }
+                // If deletion failed, redirect to Index or show errors
+                TempData["ErrorMessage"] = "Error deleting user.";
+                return RedirectToAction("Index");
             }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return NotFound();
         }
+
 
         [HttpGet]
         public IActionResult ChangePassword()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")))
-            {
-                return RedirectToAction("Login");
-            }
-
-            return View();
+            // This view would typically show fields for OldPassword, NewPassword, ConfirmPassword
+            return View(); // Needs a ChangePassword.cshtml view
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model) // Needs a ChangePasswordViewModel
         {
-            string userEmail = HttpContext.Session.GetString("UserEmail");
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound();
+                return Challenge(); // Should not happen if authorized
             }
 
-            if (user.Password != HashPassword(oldPassword))
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (!changePasswordResult.Succeeded)
             {
-                ViewBag.ErrorMessage = "Mevcut şifre yanlış!";
-                return View();
+                foreach (var error in changePasswordResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View(model);
             }
 
-            user.Password = HashPassword(newPassword);
-            await _context.SaveChangesAsync();
-
-            ViewBag.SuccessMessage = "Şifreniz başarıyla değiştirildi.";
-            return View();
+            // Optionally sign in the user again if password change invalidates the cookie
+            // await _signInManager.RefreshSignInAsync(user);
+            TempData["SuccessMessage"] = "Your password has been changed successfully.";
+            return RedirectToAction("Profile"); // Or a dedicated success page
         }
     }
 }
+

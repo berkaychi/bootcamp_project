@@ -19,7 +19,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var books = await _context.Books
-                                  .Where(b => string.IsNullOrEmpty(b.BorrowedBy)) // Ödünç alınmamış kitapları filtrele
+                                  .Where(b => string.IsNullOrEmpty(b.BorrowedByUserId)) // Ödünç alınmamış kitapları filtrele
                                   .ToListAsync();
         return View(books);
     }

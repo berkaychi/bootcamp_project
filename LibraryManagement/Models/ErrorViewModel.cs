@@ -1,8 +1,11 @@
-namespace LibraryManagement.Models;
+using System.ComponentModel.DataAnnotations; // Moved to top
 
-public class ErrorViewModel
+namespace LibraryManagement.Models
 {
-    public string? RequestId { get; set; }
+    public class ErrorViewModel
+    {
+        public string? RequestId { get; set; }
 
-    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+    }
 }

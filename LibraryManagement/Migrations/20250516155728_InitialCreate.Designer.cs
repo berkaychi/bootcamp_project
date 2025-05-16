@@ -3,6 +3,7 @@ using System;
 using LibraryManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250516155728_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -101,6 +104,9 @@ namespace LibraryManagement.Migrations
                     b.Property<string>("BorrowedByUserId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("BorrowerId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Category")
                         .HasColumnType("TEXT");
 
@@ -113,7 +119,7 @@ namespace LibraryManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BorrowedByUserId");
+                    b.HasIndex("BorrowerId");
 
                     b.ToTable("Books");
                 });
@@ -250,8 +256,7 @@ namespace LibraryManagement.Migrations
                 {
                     b.HasOne("LibraryManagement.Data.ApplicationUser", "Borrower")
                         .WithMany()
-                        .HasForeignKey("BorrowedByUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("BorrowerId");
 
                     b.Navigation("Borrower");
                 });

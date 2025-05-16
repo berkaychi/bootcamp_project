@@ -1,13 +1,13 @@
-@model User
+@model LibraryManagement.Data.ApplicationUser
 @using LibraryManagement.Data
 
 <h2>Profil Bilgileri</h2>
 
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">@Model.Name</h5>
+        <h5 class="card-title">@Model.FullName</h5>
         <p class="card-text"><strong>Email:</strong> @Model.Email</p>
-        <p class="card-text"><strong>Rol:</strong> @Model.Role</p>
+        @* <p class="card-text"><strong>Rol:</strong> @Model.Role</p> *@
 
         <a asp-action="ChangePassword" class="btn btn-warning">Şifre Değiştir</a>
     </div>

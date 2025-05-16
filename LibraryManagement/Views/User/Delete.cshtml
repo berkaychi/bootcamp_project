@@ -1,8 +1,8 @@
-@model User
+@model LibraryManagement.Data.ApplicationUser
 
 <h2>Kullanıcı Sil</h2>
 
-<p><strong>@Model.Name</strong> adlı kullanıcıyı silmek istediğinizden emin misiniz?</p>
+<p><strong>@Model.FullName</strong> adlı kullanıcıyı silmek istediğinizden emin misiniz?</p>
 
 <form asp-action="Delete" method="post">
     <input type="hidden" asp-for="Id" />

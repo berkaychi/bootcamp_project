@@ -2,30 +2,41 @@ using System.Threading.Tasks;
 using LibraryManagement.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http; // Keep for other potential uses if any, or remove if not needed.
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity; // Added for Identity
+using Microsoft.AspNetCore.Authorization; // Added for Authorization
 
 namespace LibraryManagement.Controllers
 {
-    public class BookController(DataContext context) : Controller
+    [Authorize] // Require authentication for all actions in this controller by default
+    public class BookController : Controller
     {
-        private readonly DataContext _context = context;
+        private readonly DataContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        private bool IsAdmin()  // Admin rolü kontrolü
+        public BookController(DataContext context, UserManager<ApplicationUser> userManager)
         {
-            return HttpContext.Session.GetString("UserRole") == "Admin";
+            _context = context;
+            _userManager = userManager;
         }
 
+        [AllowAnonymous] // Allow anonymous access to the book list
         public async Task<IActionResult> Index()
         {
-            ViewBag.Users = await _context.Users.Where(u => u.Role == "User").ToListAsync();
-            return View(await _context.Books.ToListAsync());
+            // Fetching users for dropdown (if still needed for assign) should use ApplicationUser
+            ViewBag.Users = await _userManager.Users.ToListAsync(); // Consider filtering by role if needed
+            ViewBag.CurrentUserId = _userManager.GetUserId(User); // Pass current user's ID for view logic
+
+            var books = await _context.Books.Include(b => b.Borrower).ToListAsync();
+
+            return View(books);
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")] // Only Admins can create
         public IActionResult Create()
         {
-            if (!IsAdmin()) return Unauthorized();
             ViewBag.Categories = new List<SelectListItem>
             {
                 new SelectListItem { Value = "Roman", Text = "Roman" },
@@ -40,25 +51,40 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(Book model)
         {
-            if (!IsAdmin()) return Unauthorized();  // Kullanıcı admin değilse sayfaya erişilemez.
-
-            _context.Books.Add(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                _context.Books.Add(model);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            // Re-populate ViewBag.Categories if returning to view due to invalid ModelState
+            ViewBag.Categories = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Roman", Text = "Roman" },
+                new SelectListItem { Value = "Bilim Kurgu", Text = "Bilim Kurgu" },
+                new SelectListItem { Value = "Fantastik", Text = "Fantastik" },
+                new SelectListItem { Value = "Tarih", Text = "Tarih" },
+                new SelectListItem { Value = "Biyografi", Text = "Biyografi" },
+                new SelectListItem { Value = "Kişisel Gelişim", Text = "Kişisel Gelişim" },
+                new SelectListItem { Value = "Polisiye", Text = "Polisiye" }
+            };
+            return View(model);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (!IsAdmin()) return Unauthorized();
-
             if (id == null)
             {
                 return NotFound();
             }
 
-            ViewBag.Categories = new List<SelectListItem>  // kategori seçimi için hazır liste
+            ViewBag.Categories = new List<SelectListItem>
             {
                 new SelectListItem { Value = "Roman", Text = "Roman" },
                 new SelectListItem { Value = "Bilim Kurgu", Text = "Bilim Kurgu" },
@@ -74,16 +100,14 @@ namespace LibraryManagement.Controllers
             {
                 return NotFound();
             }
-
             return View(book);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, Book model)
         {
-            if (!IsAdmin()) return Unauthorized();
-
             if (id != model.Id)
             {
                 return NotFound();
@@ -106,60 +130,78 @@ namespace LibraryManagement.Controllers
                 }
                 return RedirectToAction("Index");
             }
+            // Re-populate ViewBag.Categories if returning to view
+            ViewBag.Categories = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Roman", Text = "Roman" },
+                new SelectListItem { Value = "Bilim Kurgu", Text = "Bilim Kurgu" },
+                new SelectListItem { Value = "Fantastik", Text = "Fantastik" },
+                new SelectListItem { Value = "Tarih", Text = "Tarih" },
+                new SelectListItem { Value = "Biyografi", Text = "Biyografi" },
+                new SelectListItem { Value = "Kişisel Gelişim", Text = "Kişisel Gelişim" },
+                new SelectListItem { Value = "Polisiye", Text = "Polisiye" }
+            };
             return View(model);
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (!IsAdmin()) return Unauthorized();
-
             if (id == null)
             {
                 return NotFound();
             }
-
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
                 return NotFound();
             }
-
             return View(book);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Delete([FromForm] int id)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!IsAdmin()) return Unauthorized();
-
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
                 return NotFound();
             }
-
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Borrow(int id)  // Kitap ödünç alma işlemleri
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Borrow(int id)
         {
-            if (IsAdmin()) return Unauthorized();  // Adminler kitap alamaz
-
-            var book = await _context.Books.FindAsync(id);
-            if (book == null || !string.IsNullOrEmpty(book.BorrowedBy))  // kitap yoksa veya başkasındaysa
+            if (User.IsInRole("Admin")) // Admins cannot borrow books directly through this action
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Admins cannot borrow books directly. Use Assign Book feature.";
+                return RedirectToAction("Index");
             }
 
-            book.BorrowedBy = HttpContext.Session.GetString("UserEmail");
+            var book = await _context.Books.FindAsync(id);
+            if (book == null || !string.IsNullOrEmpty(book.BorrowedByUserId))
+            {
+                TempData["ErrorMessage"] = "Book not available or already borrowed.";
+                return RedirectToAction("Index");
+            }
+
+            var userId = _userManager.GetUserId(User);
+            book.BorrowedByUserId = userId;
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Book '{book.Title}' borrowed successfully.";
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Return(int id)  // kitabı geri verme işlemi
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Return(int id)
         {
             var book = await _context.Books.FindAsync(id);
             if (book == null)
@@ -167,34 +209,46 @@ namespace LibraryManagement.Controllers
                 return NotFound();
             }
 
-            if (book.BorrowedBy == HttpContext.Session.GetString("UserEmail") || IsAdmin())  // kitabın sahibiyse veya
-            {                                                                                //admin ise işlem yapabilir
-                book.BorrowedBy = null;
+            var currentUserId = _userManager.GetUserId(User);
+            // Allow return if the current user borrowed it OR if the current user is an Admin
+            if (book.BorrowedByUserId == currentUserId || User.IsInRole("Admin"))
+            {
+                book.BorrowedByUserId = null;
+                book.Borrower = null; // Clear navigation property
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Book '{book.Title}' returned successfully.";
             }
-
+            else
+            {
+                TempData["ErrorMessage"] = "You are not authorized to return this book.";
+            }
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssignBook(int bookId, int userId)  // Adminlerin kullanıcılara kitap tanımlama işlemi
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignBook(int bookId, string userId) // userId is string (ApplicationUser.Id)
         {
-            if (!IsAdmin()) return Unauthorized();
-
             var book = await _context.Books.FindAsync(bookId);
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
 
-            if (book == null || user == null || !string.IsNullOrEmpty(book.BorrowedBy))
+            if (book == null || user == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Book or User not found.";
+                return RedirectToAction("Index");
+            }
+            if (!string.IsNullOrEmpty(book.BorrowedByUserId))
+            {
+                TempData["ErrorMessage"] = "Book is already borrowed.";
+                return RedirectToAction("Index");
             }
 
-            book.BorrowedBy = user.Email;
-            await _context.SaveChangesAsync();
 
+            book.BorrowedByUserId = user.Id;
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Book '{book.Title}' assigned to {user.FullName} successfully.";
             return RedirectToAction("Index");
         }
-
-
     }
 }
