@@ -1,0 +1,76 @@
+@model LibraryManagement.Data.Book
+
+@{
+    ViewData["Title"] = "Kitap Detayları";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Kitap</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Author)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Author)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PublishYear)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PublishYear)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+        <dt class="col-sm-2">
+            Durum
+        </dt>
+        <dd class="col-sm-10">
+            @(string.IsNullOrEmpty(Model.BorrowedByUserId) ? "Mevcut" : "Ödünç Verildi")
+        </dd>
+        @if (!string.IsNullOrEmpty(Model.BorrowedByUserId) && Model.Borrower != null)
+        {
+            <dt class="col-sm-2">
+                Ödünç Alan
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Borrower.FullName 
+            </dd>
+             <dt class="col-sm-2">
+                Ödünç Alan E-posta
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Borrower.Email
+            </dd>
+        }
+        else if (!string.IsNullOrEmpty(Model.BorrowedByUserId) && Model.BorrowedByUserId != null)
+        {
+            <dt class="col-sm-2">
+                Ödünç Alan ID
+            </dt>
+            <dd class="col-sm-10">
+                @Model.BorrowedByUserId
+            </dd>
+        }
+    </dl>
+</div>
+<div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Düzenle</a> <span>|</span>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Sil</a> <span>|</span>
+    }
+    <a asp-action="Index">Kitap Listesine Geri Dön</a>
+</div>

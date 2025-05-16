@@ -32,6 +32,32 @@ namespace LibraryManagement.Controllers
 
             return View(books);
         }
+        [HttpGet]
+        [Authorize] // Allow any authenticated user
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (User.IsInRole("Admin"))
+            {
+                // Admins should use Edit/Delete pages, not this specific user-facing details view.
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var book = await _context.Books
+                .Include(b => b.Borrower) // Ensure Borrower is included
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            return View(book);
+        }
 
         [HttpGet]
         [Authorize(Roles = "Admin")] // Only Admins can create
